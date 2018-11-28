@@ -6,7 +6,7 @@ pipeline {
         branch 'PR-*'
       }
       environment {
-        PREVIEW_VERSION = "0.0.0-SNAPSHOT-$BRANCH_NAME-$BUILD_NUMBER"
+        PREVIEW_VERSION = "1.0.0-SNAPSHOT-$BRANCH_NAME-$BUILD_NUMBER"
         PREVIEW_NAMESPACE = "$APP_NAME-$BRANCH_NAME".toLowerCase()
         HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
       }
@@ -51,8 +51,8 @@ pipeline {
     }
   }
   environment {
-    ORG = 'REPLACE_ME_ORG'
-    APP_NAME = 'REPLACE_ME_APP_NAME'
+    ORG = 'balsmn'
+    APP_NAME = 'crispy-doodle'
     CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
   }
 }
