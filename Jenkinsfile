@@ -1,10 +1,5 @@
 pipeline {
   agent any
-  environment {
-    ORG = 'REPLACE_ME_ORG'
-    APP_NAME = 'REPLACE_ME_APP_NAME'
-    CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
-  }
   stages {
     stage('CI Build and push snapshot') {
       when {
@@ -17,13 +12,14 @@ pipeline {
       }
       steps {
         sh "mvn versions:set -DnewVersion=$PREVIEW_VERSION"
-        sh "mvn install"
+        sh 'mvn install'
         sh "export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml"
         sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
-        dir('./charts/preview') {
-          sh "make preview"
+        dir(path: './charts/preview') {
+          sh 'make preview'
           sh "jx preview --app $APP_NAME --dir ../.."
         }
+
       }
     }
     stage('Build Release') {
@@ -31,14 +27,12 @@ pipeline {
         branch 'master'
       }
       steps {
-        git 'https://REPLACE_ME_GIT_PROVIDER/REPLACE_ME_ORG/REPLACE_ME_APP_NAME.git'
-
-        // so we can retrieve the version in later steps
-        sh "echo \$(jx-release-version) > VERSION"
-        sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
-        sh "jx step tag --version \$(cat VERSION)"
-        sh "mvn clean deploy"
-        sh "export VERSION=`cat VERSION` && skaffold build -f skaffold.yaml"
+        git 'https://github.com/balsmn/crispy-doodle.git'
+        sh 'echo $(jx-release-version) > VERSION'
+        sh 'mvn versions:set -DnewVersion=$(cat VERSION)'
+        sh 'jx step tag --version $(cat VERSION)'
+        sh 'mvn clean deploy'
+        sh 'export VERSION=`cat VERSION` && skaffold build -f skaffold.yaml'
         sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)"
       }
     }
@@ -47,16 +41,18 @@ pipeline {
         branch 'master'
       }
       steps {
-        dir('./charts/REPLACE_ME_APP_NAME') {
-          sh "jx step changelog --version v\$(cat ../../VERSION)"
-
-          // release the helm chart
-          sh "jx step helm release"
-
-          // promote through all 'Auto' promotion Environments
-          sh "jx promote -b --all-auto --timeout 1h --version \$(cat ../../VERSION)"
+        dir(path: './charts/crispy-doodle') {
+          sh 'jx step changelog --version v$(cat ../../VERSION)'
+          sh 'jx step helm release'
+          sh 'jx promote -b --all-auto --timeout 1h --version $(cat ../../VERSION)'
         }
+
       }
     }
+  }
+  environment {
+    ORG = 'REPLACE_ME_ORG'
+    APP_NAME = 'REPLACE_ME_APP_NAME'
+    CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
   }
 }
