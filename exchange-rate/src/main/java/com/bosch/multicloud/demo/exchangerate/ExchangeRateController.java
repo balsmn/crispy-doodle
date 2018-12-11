@@ -1,4 +1,4 @@
-package com.demo.multicloud.demoapp;
+package com.bosch.multicloud.demo.exchangerate;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -10,18 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
-public class GreetingController {
+public class ExchangeRateController {
 
-    private static final String template = "Greetings from service : %s, version: %s";
     private final AtomicLong counter = new AtomicLong();
 
     @Autowired
     BuildProperties buildProperties;
 
-    @RequestMapping("/greeting")
-    public Greeting greeting() {
-        log.info("Greeting method invoked. Hurray");
-        return new Greeting(counter.incrementAndGet(),
-                String.format(template, buildProperties.getName(), buildProperties.getVersion()));
+    @RequestMapping("/exchangerate")
+    public ExchangeRate getExchangeRate() {
+        log.info("ExchangeRate service invoked. Hurray");
+        return new ExchangeRate(counter.incrementAndGet());
     }
 }

@@ -1,0 +1,3 @@
+metadata:
+  name: demo # The name of the app
+  namespace: default # The namespace the app will use
