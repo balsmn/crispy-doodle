@@ -1,4 +1,4 @@
-#Crispy Doodle
+# Crispy Doodle
 
 Sample application to demonstrate the use of fabric8 maven plugin to generate docker images, push docker images to docker hub, generate helm charts and apply the same to kubernetes.
 
